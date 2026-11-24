@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./shorty.db"
     rate_limit_max_requests: int = 10
     rate_limit_window_seconds: int = 60
+    trust_proxy_headers: bool = False
 
     model_config = SettingsConfigDict(
         env_file=".env",
