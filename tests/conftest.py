@@ -32,11 +32,13 @@ def client() -> Generator[TestClient, None, None]:
             db.close()
 
     app.dependency_overrides[get_db] = override_get_db
+    app.state.testing = True
     rate_limiter.reset()
 
     with TestClient(app) as test_client:
         yield test_client
 
+    app.state.testing = False
     app.dependency_overrides.clear()
     rate_limiter.reset()
     Base.metadata.drop_all(bind=engine)

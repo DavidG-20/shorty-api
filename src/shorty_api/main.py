@@ -13,9 +13,10 @@ from shorty_api.routers.urls import router as urls_router
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
-    """Initialize database tables on application startup."""
-    Base.metadata.create_all(bind=engine)
+async def lifespan(app_instance: FastAPI) -> AsyncIterator[None]:
+    """Initialize database tables on application startup (skipped in isolated tests)."""
+    if not getattr(app_instance.state, "testing", False):
+        Base.metadata.create_all(bind=engine)
     yield
 
 
