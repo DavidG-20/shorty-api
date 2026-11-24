@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from shorty_api.core.config import settings
 from shorty_api.core.database import get_db
 from shorty_api.schemas.url import ClickStatsResponse, ShortenRequest, ShortenResponse
+from shorty_api.services.rate_limiter import enforce_rate_limit
 from shorty_api.services.url_service import (
     AliasConflictError,
     ReservedAliasError,
@@ -23,6 +24,7 @@ router = APIRouter()
     "/api/v1/shorten",
     response_model=ShortenResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(enforce_rate_limit)],
     tags=["urls"],
 )
 def shorten_url(
