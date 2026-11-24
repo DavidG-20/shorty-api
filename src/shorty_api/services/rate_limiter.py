@@ -26,6 +26,10 @@ class SlidingWindowRateLimiter:
         while timestamps and timestamps[0] <= cutoff:
             timestamps.popleft()
 
+        if not timestamps:
+            self._requests.pop(client_key, None)
+            timestamps = self._requests[client_key]
+
         if len(timestamps) >= self.max_requests:
             retry_after = max(1, math.ceil(self.window_seconds - (now - timestamps[0])))
             return False, retry_after
